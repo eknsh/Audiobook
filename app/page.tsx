@@ -1,69 +1,157 @@
-import Image from "next/image";
+"use client";
+
+import { useEffect, useState } from "react";
 
 export default function Home() {
-  return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+const [time, setTime] = useState("");
+const [date, setDate] = useState("");
+const [playerOpen, setPlayerOpen] = useState(false);
+
+useEffect(() => {
+const update = () => {
+const now = new Date();
+
+
+  // Time without seconds
+  setTime(
+    now.toLocaleTimeString("en-IN", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    })
   );
+
+  // Date
+  setDate(
+    now.toLocaleDateString("en-IN", {
+      weekday: "long",
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    })
+  );
+};
+
+update();
+
+// Update every minute instead of every second
+const timer = setInterval(update, 60000);
+
+return () => clearInterval(timer);
+
+
+}, []);
+
+return ( <main className="relative min-h-screen overflow-hidden bg-black text-white">
+
+```
+  {/* ==============================
+      PNG BACKGROUND
+  ============================== */}
+
+  <div
+    className="fixed inset-0 bg-cover bg-center bg-no-repeat"
+    style={{
+      backgroundImage: "url('/chai-tapri.png')",
+    }}
+  />
+
+  {/* Very subtle overlay */}
+  <div className="fixed inset-0 bg-black/10" />
+
+
+  {/* ==============================
+      DATE - TOP LEFT
+  ============================== */}
+
+  <div className="fixed left-5 top-5 z-50">
+    <p className="text-xs font-medium tracking-wide text-white/90 drop-shadow-lg sm:text-sm">
+      {date}
+    </p>
+  </div>
+
+
+  {/* ==============================
+      TIME - TOP RIGHT
+  ============================== */}
+
+  <div className="fixed right-5 top-5 z-50">
+    <p className="text-lg font-semibold tracking-wide text-white/95 drop-shadow-lg sm:text-2xl">
+      {time}
+    </p>
+  </div>
+
+
+  {/* ==============================
+      SPOTIFY EMBED
+  ============================== */}
+
+  {playerOpen && (
+    <div className="fixed bottom-[100px] left-1/2 z-50 w-[92%] max-w-[380px] -translate-x-1/2 overflow-hidden rounded-2xl border border-white/10 bg-black/80 shadow-2xl backdrop-blur-md">
+
+      <iframe
+        src="https://open.spotify.com/embed/playlist/009JmK4avBuLB6fAFJsunz?utm_source=generator&theme=0"
+        width="100%"
+        height="152"
+        frameBorder="0"
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+        loading="lazy"
+      />
+
+    </div>
+  )}
+
+
+  {/* ==============================
+      SMALL MUSIC PLAYER
+  ============================== */}
+
+  <div className="fixed bottom-5 left-1/2 z-50 w-[340px] -translate-x-1/2 sm:w-[390px]">
+
+    <div className="flex h-[64px] items-center gap-3 rounded-2xl border border-white/15 bg-black/75 px-3 shadow-2xl backdrop-blur-xl">
+
+      {/* Music button */}
+
+      <button
+        type="button"
+        onClick={() => setPlayerOpen(!playerOpen)}
+        aria-label="Open Spotify player"
+        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/10 text-xl transition hover:bg-white/20"
+      >
+        🎵
+      </button>
+
+
+      {/* Music information */}
+
+      <div className="min-w-0 flex-1">
+
+        <p className="truncate text-sm font-semibold">
+          Chai Tapri
+        </p>
+
+        <p className="truncate text-[11px] text-white/50">
+          Spotify Music
+        </p>
+
+      </div>
+
+
+      {/* Open / Close */}
+
+      <button
+        type="button"
+        onClick={() => setPlayerOpen(!playerOpen)}
+        aria-label={playerOpen ? "Close player" : "Open player"}
+        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-black transition hover:scale-105"
+      >
+        {playerOpen ? "×" : "▶"}
+      </button>
+
+    </div>
+
+  </div>
+
+</main>
+);
 }
