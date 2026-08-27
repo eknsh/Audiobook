@@ -29,8 +29,6 @@ export default function MusicPlayer() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [playlistOpen, setPlaylistOpen] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [duration, setDuration] = useState(0);
   const [time, setTime] = useState("");
 
   const currentSong = songs[currentIndex];
@@ -281,14 +279,6 @@ export default function MusicPlayer() {
       /*
        * PLAYING
        */
-      if (typeof info.currentTime === "number") {
-        setProgress(info.currentTime);
-      }
-
-      if (typeof info.duration === "number" && info.duration > 0) {
-        setDuration(info.duration);
-      }
-
       if (info.playerState === 1) {
         setPlaying(true);
       }
@@ -394,16 +384,6 @@ export default function MusicPlayer() {
       )}`
     : "";
 
-  const formatTime = (seconds: number) => {
-    if (!Number.isFinite(seconds) || seconds <= 0) {
-      return "0:00";
-    }
-
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-
-    return `${mins}:${secs.toString().padStart(2, "0")}`;
-  };
   /* ----------------------------------------------------------
      UI
   ---------------------------------------------------------- */
@@ -419,7 +399,7 @@ export default function MusicPlayer() {
 
       {/* TOP CENTER STATUS */}
       <div className="fixed left-1/2 top-5 z-[70] -translate-x-1/2">
-        <div className="flex items-center gap-2 rounded-full border border-white/10 bg-black/25 px-3 py-1.5 backdrop-blur-0">
+        <div className="flex items-center gap-2 rounded-full border border-white/10 bg-black/25 px-3 py-1.5 backdrop-blur-xl">
           <span className="relative flex h-2 w-2">
             <span
               className={`absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75 ${
@@ -455,7 +435,7 @@ export default function MusicPlayer() {
 
         {/* PLAYLIST */}
         {playlistOpen && songs.length > 0 && (
-          <div className="mb-2 max-h-[300px] overflow-y-auto rounded-[20px] border-transparent bg-transparent p-2 shadow-[0_12px_50px_rgba(0,0,0,0.25)] backdrop-blur-0">
+          <div className="mb-2 max-h-[300px] overflow-y-auto rounded-[20px] border border-white/[0.11] bg-black/[0.52] p-2 shadow-[0_12px_50px_rgba(0,0,0,0.5)] backdrop-blur-2xl">
 
             <div className="px-2 pb-2 pt-1 text-[9px] uppercase tracking-[0.2em] text-white/30">
               Playlist · {songs.length} songs
@@ -469,8 +449,8 @@ export default function MusicPlayer() {
                   onClick={() => playSong(index)}
                   className={`group flex w-full items-center gap-3 rounded-xl p-2 text-left transition-all ${
                     index === currentIndex
-                      ? "bg-transparent"
-                      : "hover:bg-transparent"
+                      ? "bg-white/[0.12]"
+                      : "hover:bg-white/[0.07]"
                   }`}
                 >
                   <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-white/10">
@@ -496,12 +476,12 @@ export default function MusicPlayer() {
                       {song.title}
                     </p>
 
-                    <p className="mt-0.5 truncate text-[9px] text-white">
+                    <p className="mt-0.5 truncate text-[9px] text-white/35">
                       {song.channel || "YouTube Music"}
                     </p>
                   </div>
 
-                  <span className="px-1 text-[9px] text-white/55">
+                  <span className="px-1 text-[9px] text-white/20">
                     {index + 1}
                   </span>
                 </button>
@@ -511,12 +491,12 @@ export default function MusicPlayer() {
         )}
 
         {/* GLASS MUSIC PLAYER */}
-        <div className="px-0 py-0">
+        <div className="rounded-[22px] border border-white/[0.10] bg-black/[0.34] px-3 py-3 shadow-[0_12px_50px_rgba(0,0,0,0.35)] backdrop-blur-2xl sm:px-4">
 
           <div className="flex items-center gap-3">
 
             {/* ARTWORK */}
-            <div className="h-11 w-11 shrink-0 overflow-hidden rounded-lg border border-white/10 bg-transparent shadow-[0_0_22px_rgba(255,255,255,0.28)] sm:h-12 sm:w-12">
+            <div className="h-11 w-11 shrink-0 overflow-hidden rounded-lg border border-white/10 bg-white/[0.06] shadow-lg sm:h-12 sm:w-12">
               {currentSong?.thumbnail ? (
                 <img
                   src={currentSong.thumbnail}
@@ -541,7 +521,7 @@ export default function MusicPlayer() {
                 {currentSong?.title || "Chai Tapri"}
               </p>
 
-              <p className="mt-0.5 truncate text-[10px] text-white/50 sm:text-[11px]">
+              <p className="mt-0.5 truncate text-[10px] text-white/40 sm:text-[11px]">
                 {currentSong?.channel || "YouTube Music"}
               </p>
             </button>
@@ -551,7 +531,7 @@ export default function MusicPlayer() {
               type="button"
               onClick={previousTrack}
               disabled={!songs.length}
-              className="group flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-transparent bg-transparent text-white/55 shadow-[0_0_20px_rgba(255,255,255,0.22)] backdrop-blur-0 transition-all duration-200 hover:-translate-x-0.5 hover:border-transparent hover:bg-transparent hover:text-white active:scale-90 disabled:pointer-events-none disabled:opacity-20"
+              className="group flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/[0.07] bg-white/[0.025] text-white/45 shadow-[0_4px_20px_rgba(0,0,0,0.18)] backdrop-blur-md transition-all duration-200 hover:-translate-x-0.5 hover:border-white/[0.14] hover:bg-white/[0.07] hover:text-white active:scale-90 disabled:pointer-events-none disabled:opacity-20"
               aria-label="Previous song"
             >
               <svg
@@ -582,7 +562,7 @@ export default function MusicPlayer() {
               type="button"
               onClick={togglePlay}
               disabled={!currentSong}
-              className="group flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white text-black shadow-[0_0_30px_rgba(255,255,255,0.65),0_0_60px_rgba(255,255,255,0.22)] transition-all duration-200 hover:scale-105 hover:bg-white/90 active:scale-90 disabled:pointer-events-none disabled:opacity-30"
+              className="group flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white text-black shadow-[0_6px_25px_rgba(255,255,255,0.16)] transition-all duration-200 hover:scale-105 hover:bg-white/90 active:scale-90 disabled:pointer-events-none disabled:opacity-30"
               aria-label={playing ? "Pause" : "Play"}
             >
               {playing ? (
@@ -610,7 +590,7 @@ export default function MusicPlayer() {
               type="button"
               onClick={nextTrack}
               disabled={!songs.length}
-              className="group flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-transparent bg-transparent text-white/55 shadow-[0_0_20px_rgba(255,255,255,0.22)] backdrop-blur-0 transition-all duration-200 hover:translate-x-0.5 hover:border-transparent hover:bg-transparent hover:text-white active:scale-90 disabled:pointer-events-none disabled:opacity-20"
+              className="group flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/[0.07] bg-white/[0.025] text-white/45 shadow-[0_4px_20px_rgba(0,0,0,0.18)] backdrop-blur-md transition-all duration-200 hover:translate-x-0.5 hover:border-white/[0.14] hover:bg-white/[0.07] hover:text-white active:scale-90 disabled:pointer-events-none disabled:opacity-20"
               aria-label="Next song"
             >
               <svg
@@ -640,7 +620,7 @@ export default function MusicPlayer() {
             <button
               type="button"
               onClick={() => setPlaylistOpen((prev) => !prev)}
-              className="group flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-transparent bg-transparent text-white/50 shadow-[0_0_20px_rgba(255,255,255,0.22)] backdrop-blur-0 transition-all duration-200 hover:scale-105 hover:border-transparent hover:bg-transparent hover:text-white active:scale-90"
+              className="group flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/[0.07] bg-white/[0.025] text-white/40 shadow-[0_4px_20px_rgba(0,0,0,0.18)] backdrop-blur-md transition-all duration-200 hover:scale-105 hover:border-white/[0.14] hover:bg-white/[0.07] hover:text-white active:scale-90"
               aria-label="Toggle playlist"
             >
               <span className="flex w-[16px] flex-col gap-[3.5px]">
@@ -651,22 +631,8 @@ export default function MusicPlayer() {
             </button>
 
           </div>
-
-          {/* TIME / DURATION */}
-          <div className="mt-1.5 flex items-center justify-between px-1 text-[8px] font-mono tracking-wider text-white/30">
-            <span>{formatTime(progress)}</span>
-
-            
-
-            <span>{formatTime(duration)}</span>
-          </div>
-
         </div>
       </div>
     </>
   );
 }
-
-
-
-
